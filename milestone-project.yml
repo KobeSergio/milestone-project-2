@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: milestone-project-2
+  labels:
+    app: milestone-project-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: milestone-project-2
+  template:
+    metadata:
+      labels:
+        app: milestone-project-2
+    spec:
+      containers:
+        - name: node-api
+          image: kobesergio/js-api:v1.0.1
+          ports:
+            - containerPort: 3000 
+        - name: py-api
+          image: kobesergio/py-api:1.0
+          ports:
+            - containerPort: 3001 
+        - name: webtool
+          image: kobesergio/webtool:v1.0.1
+          ports:
+            - containerPort: 3002
+          env:
+            - name: JS_API_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: milestone-project-configmap
+                  key: JS_API_ENDPOINT
+            - name: PYTHON_API_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: milestone-project-configmap
+                  key: PYTHON_API_ENDPOINT
